@@ -32,6 +32,13 @@ if input('join? ') == 'y':
     client.accept_invite(invCode)
 
 
+def save_to_file(name, save_list):
+    file = open(name, 'w')
+    for x in range(0, len(save_list)):
+        file.write(save_list[x] + '\n')
+    file.close()
+
+
 @client.event
 def on_message(message):
     global active
@@ -142,15 +149,8 @@ def on_message(message):
             print('>' + only_content)
             client.send_message(message.channel, '<@' + message.author.id + '> ' + chatbot.get_response(only_content))
 
-    mod_file = open('mod_id.txt', 'w')
-    for mod_id_index in range(0, len(mod_ids)):
-        mod_file.write(mod_ids[mod_id_index] + '\n')
-    mod_file.close()
-
-    channel_file = open('channel_id.txt', 'w')
-    for channel_id_index in range(0, len(channel_ids)):
-        channel_file.write(channel_ids[channel_id_index] + '\n')
-    channel_file.close()
+    save_to_file('mod_id.txt', mod_ids)
+    save_to_file('channel_id.txt', channel_ids)
 
 
 @client.event
