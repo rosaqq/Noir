@@ -109,7 +109,7 @@ def on_message(message):
                                     '<@' + message.author.id + '> ' + 'Your user ID is: ' + message.author.id)
             # pepe me
             if message.content.startswith('pepe ', 5):
-                pepe_num = random.randint(1, 56)
+                pepe_num = random.randint(1, 64)
                 if time.time() - pepe_time > 10:
                     if message.content.startswith('me', 10):
                         client.send_message(message.channel, '<@' + author_id + '>')
