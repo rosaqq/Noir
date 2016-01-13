@@ -1,3 +1,10 @@
+
+'''
+
+The fields [discord_user], [discord_password], and [admin_user_id] have to be replaced with their respective description
+
+'''
+
 import discord
 import logging
 import random
@@ -17,7 +24,7 @@ client = discord.Client()
 chatbot = ChatBot('Noir')
 # these need to be global in on_message
 pepe_time = 0
-client.login('user', 'password')
+client.login('[discord_user]', '[discord_password]')
 
 # join new server derp code
 if input('join? ') == 'y':
@@ -74,7 +81,7 @@ def get_haiku():
 
 
 mod_ids = file_to_list('mod_id.txt')
-admin_ids = ['admin_user_id']
+admin_ids = ['[admin_user_id]']
 allowed_channels = file_to_list('allowed_channel_id.txt')
 
 
@@ -110,15 +117,9 @@ def on_message(message):
 
         # ping pong
         if message.content.startswith('!ping'):
-            if author_id == '108272892197806080':
+            if author_id == '[some_id]':
                 client.send_message(message.channel,
                                     'Here, have a special _pong_ just for you ' + message.author.mention())
-            elif author_id == '95105078385446912':
-                client.send_message(message.channel, 'For you, the greatest of all _pongs_, a Pong-Under-Blade ' +
-                                    message.author.mention())
-            elif message.content.startswith(' kiss', 5):
-                client.send_message(message.channel, '<@' + author_id +
-                                    '> sent you a Pong-Under-Blade <@95105078385446912>')
             else:
                 client.send_message(message.channel, 'pong!')
 
