@@ -1,11 +1,5 @@
-
-'''
-
-The fields [discord_user], [discord_password], and [admin_user_id] have to be replaced with their respective description
-
-'''
-
 import discord
+import asyncio
 import logging
 import random
 import time
@@ -24,7 +18,6 @@ client = discord.Client()
 chatbot = ChatBot('Noir')
 # these need to be global in on_message
 pepe_time = 0
-client.login('[discord_user]', '[discord_password]')
 
 # join new server derp code
 if input('join? ') == 'y':
@@ -79,14 +72,25 @@ def get_haiku():
         cont = cont.replace('</div><', '', 1)
     return '```' + verso[0] + '\n' + verso[1] + '\n' + verso[2] + '\n' + '```'
 
+def get_first_mention(message):
+    return message.raw_mentions[0]
+
 
 mod_ids = file_to_list('mod_id.txt')
-admin_ids = ['[admin_user_id]']
+admin_ids = [' PUT YOUR ID HERE']
 allowed_channels = file_to_list('allowed_channel_id.txt')
 
 
 @client.event
-def on_message(message):
+async def on_ready():
+    print('Logged in as')
+    print(client.user.name)
+    print(client.user.id)
+    print('------')
+
+
+@client.event
+async def on_message(message):
     global pepe_time
     global mod_ids
     global allowed_channels
@@ -99,16 +103,16 @@ def on_message(message):
     if message.content.startswith('noir ') and (admin or mod):
         if message.content.startswith('come', 5):
             allowed_channels.append(message.channel.id)
-            client.send_message(message.channel, "I'm here")
+            await client.send_message(message.channel, "I'm here")
         if message.content.startswith('leave', 5):
             allowed_channels.remove(message.channel.id)
-            client.send_message(message.channel, 'Call me when you need me.')
+            await client.send_message(message.channel, 'Call me when you need me.')
 
     # client.logout() on "noir kill"
     if message.content.startswith('noir ') and admin:
         if message.content.startswith('kill', 5):
-            client.send_file(message.channel, fp='img/okay.png')
-            client.logout()
+            await client.send_file(message.channel, fp='img/okay.png')
+            await client.logout()
 
     # check if message.channel in allowed_channels
     if in_list(message.channel.id, allowed_channels):
@@ -117,17 +121,13 @@ def on_message(message):
 
         # ping pong
         if message.content.startswith('!ping'):
-            if author_id == '[some_id]':
-                client.send_message(message.channel,
-                                    'Here, have a special _pong_ just for you ' + message.author.mention())
-            else:
-                client.send_message(message.channel, 'pong!')
+            await client.send_message(message.channel, 'pong!')
 
         # chat-bot reply
         if message.content.startswith('<@134723912129839104> '):
             print('>' + remove_noir_mention(message.content))
-            client.send_message(message.channel, '<@' + message.author.id + '> ' +
-                                chatbot.get_response(remove_noir_mention(message.content)))
+            await client.send_message(message.channel, '<@' + message.author.id + '> ' +
+                                      chatbot.get_response(remove_noir_mention(message.content)))
 
         # call-sign commands -------------------------------------------------------------------------------------------
         if message.content.startswith('noir '):
@@ -138,77 +138,70 @@ def on_message(message):
                 # add mod
                 if message.content.startswith('add mod ', 5):
                     if message.get_raw_mentins()[0] in mod_ids:
-                        client.send_message(message.channel, '<@' + message.get_raw_mentions[0] +
-                                            '> is already a bot mod.')
+                        await client.send_message(message.channel, '<@' + message.get_raw_mentions[0] +
+                                                  '> is already a bot mod.')
                     else:
-                        mod_ids.append(message.get_raw_mentions()[0])
-                        client.send_message(message.channel, 'Added <@' + message.get_raw_mentions()[0] +
-                                            '> as a bot mod.')
+                        mod_ids.append(get_first_mention(message))
+                        await client.send_message(message.channel, 'Added <@' + get_first_mention(message) +
+                                                  '> as a bot mod.')
 
                 # remove mod
                 if message.content.startswith('del mod ', 5):
-                    mod_ids.pop(mod_ids.index(message.get_raw_mentions()[0]))
-                    client.send_message(message.channel,
-                                        'Removed <@' + message.get_raw_mentions()[0] + '> as a bot mod.')
+                    mod_ids.pop(mod_ids.index(get_first_mention(message)))
+                    await client.send_message(message.channel, 'Removed <@' + get_first_mention(message) +
+                                              '> as a bot mod.')
 
             # mod commands ---------------------------------------------------------------------------------------------
             if admin or mod:
 
                 # change Playing" status
                 if message.content.startswith('status', 5):
-                    client.change_status(game=discord.Game(name=message.content.replace('noir status ', '')))
+                    await client.change_status(game=discord.Game(name=message.content.replace('noir status ', '')))
                 if message.content.startswith('status none', 5):
-                    client.change_status(game=None)
+                    await client.change_status(game=None)
 
             # free commands --------------------------------------------------------------------------------------------
 
             # help
             if message.content.startswith('help', 5):
-                client.send_message(message.channel, '<@' + author_id + '> `help is a lie.`')
+                await client.send_message(message.channel, '<@' + author_id + '> `help is a lie.`')
 
             # reply with game
             if message.content.startswith('gimme game', 5):
-                client.send_message(message.channel, message.author.game)
+                await client.send_message(message.channel, message.author.game)
 
             # reply message.author.id function
             if message.content.startswith('gimme id', 5):
-                client.send_message(message.channel,
-                                    '<@' + message.author.id + '> ' + 'Your user ID is: ' + message.author.id)
+                await client.send_message(message.channel,
+                                          '<@' + message.author.id + '> ' + 'Your user ID is: ' + message.author.id)
 
             # pepe
-            if message.content.startswith('pepe ', 5):
+            if message.content.startswith('pepe', 5):
                 pepe_num = random.randint(1, 64)
 
                 # rate limiter, check if time elapsed since last pepe > 10
                 if time.time() - pepe_time > 10:
                     if message.content.startswith('<@', 10):
-                        client.send_message(message.channel, '<@' + message.get_raw_mentions()[0] + '>')
-                        client.send_file(message.channel, fp='img/' + str(pepe_num) + '.png')
+                        await client.send_message(message.channel, '<@' + get_first_mention(message) + '>')
+                        await client.send_file(message.channel, fp='img/' + str(pepe_num) + '.png')
                         pepe_time = time.time()
                     else:
-                        client.send_message(message.channel, '<@' + author_id + '>')
-                        client.send_file(message.channel, fp='img/' + str(pepe_num) + '.png')
+                        await client.send_message(message.channel, '<@' + author_id + '>')
+                        await client.send_file(message.channel, fp='img/' + str(pepe_num) + '.png')
                         pepe_time = time.time()
                 else:
-                    client.send_message(message.channel, '<@' + author_id +
-                                        '> Wait at least 10 seconds between pepes please.')
+                    await client.send_message(message.channel, '<@' + author_id +
+                                              '> Wait at least 10 seconds between pepes please.')
 
             if message.content.startswith('haiku', 5):
                 if message.content.startswith('<@', 11):
-                    client.send_message(message.channel, '<@' + message.get_raw_mentions()[0] + '>\n' + get_haiku())
+                    await client.send_message(message.channel,
+                                              '<@' + get_first_mention(message) + '>\n' + get_haiku())
                 else:
-                    client.send_message(message.channel, '<@' + author_id + '>\n' + get_haiku())
+                    await client.send_message(message.channel, '<@' + author_id + '>\n' + get_haiku())
 
     list_to_file('mod_id.txt', mod_ids)
     list_to_file('allowed_channel_id.txt', allowed_channels)
 
 
-@client.event
-def on_ready():
-    print('Logged in as')
-    print(client.user.name)
-    print(client.user.id)
-    print('------')
-
-
-client.run()
+client.run('DISCORD LOGIN MAIL', 'PASSWORD HERE')

@@ -5,7 +5,10 @@
 
 # Dependencies:  
 ChatterBot by gunthercox  
-https://github.com/gunthercox/ChatterBot
+https://github.com/gunthercox/ChatterBot  
+
+discord.py by Rapptz
+https://github.com/Rapptz/discord.py
 
 
 bot commands (type them in discord chat while bot is running):
@@ -36,3 +39,6 @@ bot commands (type them in discord chat while bot is running):
 '@Noir + message' and he will answer.  
 He will learn when you talk with him, and the more you chat, the better he gets at speaking.  
 Refer to the linked ChatterBot page to learn how it works.
+
+## IMPORTANT NOTES  
+You have to put some of your data inside the Noir.py for it to work. Look inside for fields that say "PUT SOMETHING HERE". What you have to put there will be explained on each field
