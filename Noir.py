@@ -17,7 +17,7 @@ client = discord.Client()
 chatbot = ChatBot('Noir')
 # these need to be global in on_message
 pepe_time = 0
-client.login('seckbot@gmail.com', 'botsy999')
+client.login('user', 'password')
 
 # join new server derp code
 if input('join? ') == 'y':
@@ -74,7 +74,7 @@ def get_haiku():
 
 
 mod_ids = file_to_list('mod_id.txt')
-admin_ids = ['128469181178970112']
+admin_ids = ['admin_user_id']
 allowed_channels = file_to_list('allowed_channel_id.txt')
 
 
