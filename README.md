@@ -33,7 +33,8 @@ bot commands (type them in discord chat while bot is running):
 'noir pepe'------------returns a random pepe to user  
 'noir pepe @someone'---@someone a random pepe
 'noir haiku'-----------returns a haiku to user  
-'noir haiku @someone'--@someone a haiku
+'noir haiku @someone'--@someone a haiku  
+'noir rank'------------shows your level of permission to run the commands  
 
 #### how to use chatbot:
 '@Noir + message' and he will answer.  
@@ -41,4 +42,4 @@ He will learn when you talk with him, and the more you chat, the better he gets 
 Refer to the linked ChatterBot page to learn how it works.
 
 ## IMPORTANT NOTES  
-You have to put some of your data inside the Noir.py for it to work. Look inside for fields that say "PUT SOMETHING HERE". What you have to put there will be explained on each field
+At the end of the program you have to put your discord user, pass as args to client.run('user', 'pass') for it to be able to connect to discord servers.
