@@ -4,7 +4,7 @@
 ### Absolutly pre-alpha don't even try
 
 # Requirements/Dependencies:  
-**Python 3.4+** 
+**Python 3.4+**  
 **ChatterBot by gunthercox**  
 https://github.com/gunthercox/ChatterBot  
 **Discord.py by Rapptz**  
