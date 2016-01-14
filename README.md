@@ -3,11 +3,11 @@
 
 ### Absolutly pre-alpha don't even try
 
-# Dependencies:  
-ChatterBot by gunthercox  
+# Requirements/Dependencies:  
+**Python 3.4+** 
+**ChatterBot by gunthercox**  
 https://github.com/gunthercox/ChatterBot  
-
-discord.py by Rapptz
+**Discord.py by Rapptz**  
 https://github.com/Rapptz/discord.py
 
 
