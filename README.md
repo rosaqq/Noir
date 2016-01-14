@@ -41,5 +41,7 @@ bot commands (type them in discord chat while bot is running):
 He will learn when you talk with him, and the more you chat, the better he gets at speaking.  
 Refer to the linked ChatterBot page to learn how it works.
 
-## IMPORTANT NOTES  
+## IMPORTANT NOTES 
+**How to install & run:**  
+Download from git or whatever, just put all that is here on github on a folder in your computer and run 'Noir.py' (pyhton 3.4+ needs to be installed)  
 At the end of the program you have to put your discord user, pass as args to client.run('user', 'pass') for it to be able to connect to discord servers.
