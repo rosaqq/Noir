@@ -61,10 +61,10 @@ def in_list(check_id, check_list):
 
 
 def remove_noir_mention(message):
-    if message.find('<@134723912129839104> ') == -1:
-        return message.replace('<@134723912129839104>', '')
+    if message.find('<@' + client.user.id + '> ') == -1:
+        return message.replace('<@' + client.user.id + '>', '')
     else:
-        return message.replace('<@134723912129839104> ', '')
+        return message.replace('<@' + client.user.id + '> ', '')
 
 
 def get_haiku():
@@ -129,7 +129,7 @@ async def on_message(message):
             await client.send_message(message.channel, 'pong!')
 
         # chat-bot reply
-        if message.content.startswith('<@134723912129839104> '):
+        if message.content.startswith('<@' + client.user.id + '> '):
             print('>' + remove_noir_mention(message.content))
             await client.send_message(message.channel, '<@' + message.author.id + '> ' +
                                       chatbot.get_response(remove_noir_mention(message.content)))
@@ -219,4 +219,4 @@ async def on_message(message):
     list_to_file('allowed_channel_id.txt', allowed_channels)
 
 
-client.run('[PUT DISCORD LOGIN USER HERE]', 'PUT DISCORD LOGIN PASSWORD HERE')
+client.run('seckbot@gmail.com', 'botlife929')
