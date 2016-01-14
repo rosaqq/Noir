@@ -1,5 +1,4 @@
 import discord
-import asyncio
 import logging
 import random
 import time
@@ -19,11 +18,6 @@ chatbot = ChatBot('Noir')
 # these need to be global in on_message
 pepe_time = 0
 
-# join new server derp code
-if input('join? ') == 'y':
-    invCode = input('Invite URL: ')
-    client.accept_invite(invCode)
-
 
 def file_to_list(name):
     try:
@@ -35,6 +29,21 @@ def file_to_list(name):
         g.close()
         a = []
     return a
+
+mod_ids = file_to_list('mod_id.txt')
+admin_ids = file_to_list('admin_id.txt')
+allowed_channels = file_to_list('allowed_channel_id.txt')
+
+# join new server derp code
+if input('Configure?(y/n)') == 'y':
+    if input('Join a new server?(y/n)') == 'y':
+        invCode = input('Paste invite URL or code here: ')
+        client.accept_invite(invCode)
+    if input('Add new admin discord user ID?(y/n)') == 'y':
+        new_id = input('Paste ID here: ')
+        admin_ids.append(new_id)
+        print('Current admin ID list: ' + str(admin_ids))
+print('Connecting to discord servers...')
 
 
 def list_to_file(file_name, save_list):
@@ -72,13 +81,9 @@ def get_haiku():
         cont = cont.replace('</div><', '', 1)
     return '```' + verso[0] + '\n' + verso[1] + '\n' + verso[2] + '\n' + '```'
 
+
 def get_first_mention(message):
     return message.raw_mentions[0]
-
-
-mod_ids = file_to_list('mod_id.txt')
-admin_ids = [' PUT YOUR ID HERE']
-allowed_channels = file_to_list('allowed_channel_id.txt')
 
 
 @client.event
@@ -162,6 +167,15 @@ async def on_message(message):
 
             # free commands --------------------------------------------------------------------------------------------
 
+            # test if admin or mod
+            if message.content.startswith('rank', 5):
+                if author_id in mod_ids:
+                    await client.send_message(message.channel, '<@' + author_id + '> you have bot mod rank.')
+                elif author_id in admin_ids:
+                    await client.send_message(message.channel, '<@' + author_id + '> you have bot admin rank.')
+                else:
+                    await client.send_message(message.channel, '<@' + author_id + '> you are just a dirty peasant')
+
             # help
             if message.content.startswith('help', 5):
                 await client.send_message(message.channel, '<@' + author_id + '> `help is a lie.`')
@@ -201,7 +215,8 @@ async def on_message(message):
                     await client.send_message(message.channel, '<@' + author_id + '>\n' + get_haiku())
 
     list_to_file('mod_id.txt', mod_ids)
+    list_to_file('admin_id.txt', admin_ids)
     list_to_file('allowed_channel_id.txt', allowed_channels)
 
 
-client.run('DISCORD LOGIN MAIL', 'PASSWORD HERE')
+client.run('[PUT DISCORD LOGIN USER HERE]', 'PUT DISCORD LOGIN PASSWORD HERE')
