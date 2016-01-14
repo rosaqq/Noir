@@ -31,7 +31,7 @@ bot commands (type them in discord chat while bot is running):
 'noir gimme game'------return the game user is currently playing  
 'noir gimme id'--------returns the user's id  
 'noir pepe'------------returns a random pepe to user  
-'noir pepe @someone'---@someone a random pepe
+'noir pepe @someone'---@someone a random pepe  
 'noir haiku'-----------returns a haiku to user  
 'noir haiku @someone'--@someone a haiku  
 'noir rank'------------shows your level of permission to run the commands  
