@@ -8,7 +8,7 @@
 **ChatterBot by gunthercox**  
 https://github.com/gunthercox/ChatterBot  
 **Discord.py by Rapptz**  
-https://github.com/Rapptz/discord.py
+https://github.com/Rapptz/discord.py  
 **lxml**  
 http://lxml.de/installation.html  
 
