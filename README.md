@@ -15,9 +15,9 @@ http://lxml.de/installation.html
 bot commands (type them in discord chat while bot is running):
 
 #### special commands (Noir will always respond):  
-'noir come'-----to bring noir to the current channel (Noir will answer to normal commands)  
-'noir leave'----to get him out of the current channel (Noir won't answer to normal commands)  
-'noir kill'-----stops Noir (ends the program)
+'noir come'-----to bring noir to the current channel (Noir will answer to normal commands)>admin or mod rank  
+'noir leave'----to get him out of the current channel (Noir won't answer to normal commands)>admin or mod rank  
+'noir kill'-----stops Noir (ends the program)>admin rank only
 
 #### normal commands (Noir will only answer if he's in the channel where they were sent):  
 **admin only commands:**  
