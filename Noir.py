@@ -2,7 +2,8 @@ import discord
 import logging
 import random
 import time
-import urllib.request
+from lxml import html
+import requests
 from chatterbot import ChatBot
 
 # log code
@@ -68,17 +69,9 @@ def remove_noir_mention(message):
 
 
 def get_haiku():
-    u = 'http://www.randomhaiku.com/'
-    f = urllib.request.urlopen(u)
-    cont = str(f.read())
-    f.close()
-    verso = []
-    for i in range(0, 3):
-        beg = cont.find('line') + 6
-        end = cont.find('</div><')
-        verso.append(cont[beg:end])
-        cont = cont.replace('line', '', 1)
-        cont = cont.replace('</div><', '', 1)
+    page = requests.get('http://www.randomhaiku.com/')
+    tree = html.fromstring(page.content)
+    verso = tree.xpath('//div[@class="line"]/text()')
     return '```' + verso[0] + '\n' + verso[1] + '\n' + verso[2] + '\n' + '```'
 
 
@@ -142,8 +135,8 @@ async def on_message(message):
 
                 # add mod
                 if message.content.startswith('add mod ', 5):
-                    if message.get_raw_mentins()[0] in mod_ids:
-                        await client.send_message(message.channel, '<@' + message.get_raw_mentions[0] +
+                    if get_first_mention(message) in mod_ids:
+                        await client.send_message(message.channel, '<@' + get_first_mention(message) +
                                                   '> is already a bot mod.')
                     else:
                         mod_ids.append(get_first_mention(message))
