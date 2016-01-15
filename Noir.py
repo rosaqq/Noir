@@ -75,6 +75,20 @@ def get_haiku():
     return '```' + verso[0] + '\n' + verso[1] + '\n' + verso[2] + '\n' + '```'
 
 
+def get_insult():
+    page = requests.get('http://www.insultgenerator.org/')
+    tree = html.fromstring(page.content)
+    insult = tree.xpath('//div[@class="wrap"]/text()')
+    return str(insult[1])
+
+
+def get_comp():
+    page = requests.get('http://www.madsci.org/cgi-bin/cgiwrap/~lynn/jardin/SCG')
+    tree = html.fromstring(page.content)
+    compliment = ' '.join(str(tree.xpath('//h2/text()')[0]).split())
+    return compliment
+
+
 def get_first_mention(message):
     return message.raw_mentions[0]
 
@@ -206,6 +220,20 @@ async def on_message(message):
                                               '<@' + get_first_mention(message) + '>\n' + get_haiku())
                 else:
                     await client.send_message(message.channel, '<@' + author_id + '>\n' + get_haiku())
+
+            if message.content.startswith('rek', 5):
+                if message.content.startswith('<@', 9):
+                    await client.send_message(message.channel,
+                                              '<@' + get_first_mention(message) + '>\n' + get_insult())
+                else:
+                    await client.send_message(message.channel, '<@' + author_id + '>\n' + get_insult())
+
+            if message.content.startswith('praise', 5):
+                if message.content.startswith('<@', 12):
+                    await client.send_message(message.channel,
+                                              '<@' + get_first_mention(message) + '>\n' + get_comp())
+                else:
+                    await client.send_message(message.channel, '<@' + author_id + '>\n' + get_comp())
 
     list_to_file('mod_id.txt', mod_ids)
     list_to_file('admin_id.txt', admin_ids)
