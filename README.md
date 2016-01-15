@@ -9,7 +9,8 @@
 https://github.com/gunthercox/ChatterBot  
 **Discord.py by Rapptz**  
 https://github.com/Rapptz/discord.py
-
+**lxml**  
+http://lxml.de/installation.html  
 
 bot commands (type them in discord chat while bot is running):
 
