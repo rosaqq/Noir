@@ -38,8 +38,6 @@ bot commands (type them in discord chat while bot is running):
 'noir rank'------------shows your level of permission to run the commands  
 'noir rek'-------------insults you, based on http://www.insultgenerator.org/  
 'noir rek @some1'------same as previous one but instults @some1  
-'noir praise'----------compliments you, based http://www.madsci.org/cgi-bin/cgiwrap/~lynn/jardin/SCG  
-'noir praise @some1'---same as previous one but instults @some1  
 
 #### how to use chatbot:
 '@Noir + message' and he will answer.  
