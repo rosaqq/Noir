@@ -4,6 +4,7 @@ import random
 import time
 from lxml import html
 import requests
+import language_check
 from chatterbot import ChatBot
 
 # log code
@@ -18,6 +19,7 @@ client = discord.Client()
 chatbot = ChatBot('Noir')
 # these need to be global in on_message
 pepe_time = 0
+grammar_channels = []
 
 
 def file_to_list(name):
@@ -30,6 +32,7 @@ def file_to_list(name):
         g.close()
         a = []
     return a
+
 
 mod_ids = file_to_list('mod_id.txt')
 admin_ids = file_to_list('admin_id.txt')
@@ -82,6 +85,33 @@ def get_insult():
     return str(insult[1])
 
 
+def get_quote():
+    page = requests.get('http://www.all-famous-quotes.com/quotes_generator.html')
+    tree = html.fromstring(page.content)
+    pre_quote = str(tree.xpath('//blockquote[@class="new"]/text()')[0]).split()
+    del(pre_quote[len(pre_quote)-1:len(pre_quote)])
+    quote = ' '.join(pre_quote)
+    author = tree.xpath('//a[@class="link"]/text()')
+    return str(quote) + ' \n \t —' + str(author[1])
+
+
+def gram_naz(text):
+    tool = language_check.LanguageTool('en-GB')
+    matches = tool.check(text)
+    if len(matches) > 0:
+        return language_check.correct(text, matches)
+
+
+
+'''
+def get_comp():
+    page = requests.get('http://www.madsci.org/cgi-bin/cgiwrap/~lynn/jardin/SCG')
+    tree = html.fromstring(page.content)
+    compliment = ' '.join(str(tree.xpath('//h2/text()')[0]).split())
+    return compliment
+'''
+
+
 def get_first_mention(message):
     return message.raw_mentions[0]
 
@@ -96,6 +126,7 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+    global grammar_channels
     global pepe_time
     global mod_ids
     global allowed_channels
@@ -123,6 +154,12 @@ async def on_message(message):
     if in_list(message.channel.id, allowed_channels):
 
         # active commands ----------------------------------------------------------------------------------------------
+
+        if message.channel.id in grammar_channels and author_id != client.user.id:
+            grammar_nazi = gram_naz(message.content)
+            if grammar_nazi:
+                await client.send_message(message.channel, '<@' + author_id + '> did you mean: "' +
+                                          grammar_nazi + '" ?')
 
         # ping pong
         if message.content.startswith('!ping'):
@@ -156,17 +193,27 @@ async def on_message(message):
                     await client.send_message(message.channel, 'Removed <@' + get_first_mention(message) +
                                               '> as a bot mod.')
 
+                if message.content.startswith('grammar', 5):
+                    if message.content.startswith('off', 13):
+                        grammar_channels.pop(grammar_channels.index(message.channel.id))
+                        await client.send_message(message.channel, 'grammar disabled')
+                    else:
+                        grammar_channels.append(message.channel.id)
+                        await client.send_message(message.channel, 'grammar enabled')
+                        print(grammar_channels)
+
             # mod commands ---------------------------------------------------------------------------------------------
             if admin or mod:
 
-                # change Playing" status
+                # change "Playing" status
                 if message.content.startswith('status', 5):
                     await client.change_status(game=discord.Game(name=message.content.replace('noir status ', '')))
                 if message.content.startswith('status none', 5):
                     await client.change_status(game=None)
 
-            # free commands --------------------------------------------------------------------------------------------
 
+
+            # free commands --------------------------------------------------------------------------------------------
             # test if admin or mod
             if message.content.startswith('rank', 5):
                 if author_id in mod_ids:
@@ -191,21 +238,25 @@ async def on_message(message):
 
             # pepe
             if message.content.startswith('pepe', 5):
-                pepe_num = random.randint(1, 64)
-
-                # rate limiter, check if time elapsed since last pepe > 10
-                if time.time() - pepe_time > 10:
-                    if message.content.startswith('<@', 10):
-                        await client.send_message(message.channel, '<@' + get_first_mention(message) + '>')
-                        await client.send_file(message.channel, fp='img/' + str(pepe_num) + '.png')
-                        pepe_time = time.time()
-                    else:
-                        await client.send_message(message.channel, '<@' + author_id + '>')
-                        await client.send_file(message.channel, fp='img/' + str(pepe_num) + '.png')
-                        pepe_time = time.time()
+                if message.content.startswith('noir pepe and die'):
+                    await client.send_message(message.channel, '<@' + author_id + '> but I love you!')
                 else:
-                    await client.send_message(message.channel, '<@' + author_id +
-                                              '> Wait at least 10 seconds between pepes please.')
+
+                    pepe_num = random.randint(1, 64)
+
+                    # rate limiter, check if time elapsed since last pepe > 10
+                    if time.time() - pepe_time > 10:
+                        if message.content.startswith('<@', 10):
+                            await client.send_message(message.channel, '<@' + get_first_mention(message) + '>')
+                            await client.send_file(message.channel, fp='img/' + str(pepe_num) + '.png')
+                            pepe_time = time.time()
+                        else:
+                            await client.send_message(message.channel, '<@' + author_id + '>')
+                            await client.send_file(message.channel, fp='img/' + str(pepe_num) + '.png')
+                            pepe_time = time.time()
+                    else:
+                        await client.send_message(message.channel, '<@' + author_id +
+                                                  '> Wait at least 10 seconds between pepes please.')
 
             if message.content.startswith('haiku', 5):
                 if message.content.startswith('<@', 11):
@@ -221,7 +272,22 @@ async def on_message(message):
                 else:
                     await client.send_message(message.channel, '<@' + author_id + '>\n' + get_insult())
 
+            if message.content.startswith('quote', 5):
+                if message.content.startswith('<@', 11):
+                    await client.send_message(message.channel,
+                                              '<@' + get_first_mention(message) + '>\n' + get_quote())
+                else:
+                    await client.send_message(message.channel, '<@' + author_id + '>\n' + get_quote())
 
+            '''
+            if message.content.startswith('praise', 5):
+                if message.content.startswith('<@', 12):
+                    await client.send_message(message.channel,
+                                              '<@' + get_first_mention(message) + '>\n' + get_comp())
+                else:
+                    await client.send_message(message.channel, '<@' + author_id + '>\n' + get_comp())
+
+            '''
 
     list_to_file('mod_id.txt', mod_ids)
     list_to_file('admin_id.txt', admin_ids)
