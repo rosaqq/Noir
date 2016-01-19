@@ -37,7 +37,9 @@ bot commands (type them in discord chat while bot is running):
 'noir haiku @someone'--@someone a haiku  
 'noir rank'------------shows your level of permission to run the commands  
 'noir rek'-------------insults you, based on http://www.insultgenerator.org/  
-'noir rek @some1'------same as previous one but instults @some1  
+'noir rek @some1'------same as previous one but instults @some1
+'noir quote'-----------returs a random quote+author  
+'noir quote @some1'----same as previous but returns it to @some1  
 
 #### how to use chatbot:
 '@Noir + message' and he will answer.  
