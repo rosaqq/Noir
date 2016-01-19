@@ -102,7 +102,6 @@ def gram_naz(text):
         return language_check.correct(text, matches)
 
 
-
 '''
 def get_comp():
     page = requests.get('http://www.madsci.org/cgi-bin/cgiwrap/~lynn/jardin/SCG')
@@ -159,7 +158,7 @@ async def on_message(message):
             grammar_nazi = gram_naz(message.content)
             if grammar_nazi:
                 await client.send_message(message.channel, '<@' + author_id + '> did you mean: "' +
-                                          grammar_nazi + '" ?')
+                                          grammar_nazi + '"')
 
         # ping pong
         if message.content.startswith('!ping'):
@@ -210,8 +209,6 @@ async def on_message(message):
                     await client.change_status(game=discord.Game(name=message.content.replace('noir status ', '')))
                 if message.content.startswith('status none', 5):
                     await client.change_status(game=None)
-
-
 
             # free commands --------------------------------------------------------------------------------------------
             # test if admin or mod
