@@ -1,5 +1,5 @@
-.idea
+.idea/
 secret.ini
 test.py
 discord.log
-sounds
+sounds/
