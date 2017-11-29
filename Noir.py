@@ -22,17 +22,6 @@ async def parser(msg: str, cs: str):
     return a[0], a[1:]
 
 
-async def vjoin(msg):
-    vo = client.voice_client_in(msg.server)
-    if vo is None:
-        vo = await client.join_voice_channel(msg.author.voice_channel)
-    return vo
-
-
-async def play(sound, msg):
-    vo = await vjoin(msg)
-    vo.create_ffmpeg_player('sounds/'+sound+'.mp3').start()
-
 @client.event
 async def on_ready():
     print('Logged in as')
@@ -47,18 +36,19 @@ async def on_message(message):
         cmd = Cmd(client, message)
         funcs = [x for x, y in Cmd.__dict__.items() if type(y) == FunctionType if not x.startswith('_')]
         com, args = await parser(message.content, cs)
-        if com in funcs:
+        if com == 'help':
+            helpmsg = '```\nSyntax: noir [command] [args]\nCommands:\n\n'
+            for f in funcs:
+                helpmsg += '\t-> ' + f + ':' + eval('cmd.' + f + '.__doc__') + '\n\n'
+            helpmsg = helpmsg + '```'
+            await client.send_message(message.channel, helpmsg)
+
+        elif com in funcs:
             try:
                 await eval('cmd.' + com + '(*args)')
             except TypeError as meme:
                 await client.send_message(message.channel, meme)
         else:
             await client.send_message(message.channel, 'No such command')
-
-
-
-
-
-
 
 client.run(config['AUTH']['token'])
