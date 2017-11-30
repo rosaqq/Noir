@@ -27,7 +27,7 @@ class Cmd:
         voice = self.client.voice_client_in(self.msg.server)
         if voice is None:
             voice = await self.client.join_voice_channel(self.msg.author.voice_channel)
-        if sound not in os.listdir('sounds'):
+        if (sound + '.mp3') not in os.listdir('sounds'):
             return await self.client.send_message(self.msg.channel, 'No such sound.')
         player = voice.create_ffmpeg_player('sounds/' + sound + '.mp3')
         player.start()
