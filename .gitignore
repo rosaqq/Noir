@@ -2,4 +2,5 @@
 secret.ini
 test.py
 discord.log
-sounds/
+__pycache__/
+img/
